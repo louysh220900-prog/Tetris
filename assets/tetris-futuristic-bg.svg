@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<defs>
+ <linearGradient id="space" x2="0" y2="1"><stop stop-color="#030611"/><stop offset=".55" stop-color="#07152e"/><stop offset="1" stop-color="#030611"/></linearGradient>
+ <radialGradient id="nebula"><stop stop-color="#174acb" stop-opacity=".55"/><stop offset="1" stop-color="#06102a" stop-opacity="0"/></radialGradient>
+ <linearGradient id="cyan"><stop stop-color="#47eaff"/><stop offset="1" stop-color="#1766ff"/></linearGradient>
+ <linearGradient id="violet"><stop stop-color="#e080ff"/><stop offset="1" stop-color="#6948ff"/></linearGradient>
+ <linearGradient id="pink"><stop stop-color="#ff86d4"/><stop offset="1" stop-color="#a72fff"/></linearGradient>
+ <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse"><path d="M80 0H0V80" fill="none" stroke="#238bff" stroke-opacity=".2" stroke-width="1.5"/></pattern>
+ <filter id="glow"><feGaussianBlur stdDeviation="8" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <g id="cube"><rect width="70" height="70" rx="7" fill="currentColor" fill-opacity=".9" stroke="#d5fbff" stroke-opacity=".8" stroke-width="2"/><path d="M8 10H62M9 10V60" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="4"/><path d="M10 60H60" stroke="#000" stroke-opacity=".22" stroke-width="5"/></g>
+</defs>
+<rect width="1600" height="1000" fill="url(#space)"/><ellipse cx="800" cy="530" rx="760" ry="500" fill="url(#nebula)"/><rect width="1600" height="1000" fill="url(#grid)" opacity=".72"/>
+<g fill="#b7eaff"><circle cx="140" cy="135" r="2"/><circle cx="300" cy="300" r="2"/><circle cx="1250" cy="150" r="2"/><circle cx="1430" cy="390" r="2"/><circle cx="1080" cy="95" r="1.5"/><circle cx="470" cy="110" r="1.5"/><circle cx="155" cy="600" r="1.5"/><circle cx="1350" cy="700" r="2"/><circle cx="980" cy="250" r="1.5"/><circle cx="620" cy="770" r="2"/><circle cx="1490" cy="870" r="1.5"/></g>
+<g opacity=".22" stroke="#00d9ff" stroke-width="2"><path d="M0 700L500 570 900 640 1600 430" fill="none"/><path d="M0 760L500 630 900 700 1600 490" fill="none"/></g>
+<g filter="url(#glow)" opacity=".92" style="color:#45ddff" transform="translate(180 250) rotate(-12)"><use href="#cube" x="0" y="0"/><use href="#cube" x="72" y="0"/><use href="#cube" x="144" y="0"/><use href="#cube" x="216" y="0"/></g>
+<g filter="url(#glow)" opacity=".9" style="color:#9a75ff" transform="translate(1120 200) rotate(12)"><use href="#cube" x="0" y="0"/><use href="#cube" x="0" y="72"/><use href="#cube" x="0" y="144"/><use href="#cube" x="72" y="144"/></g>
+<g filter="url(#glow)" opacity=".72" style="color:#ff63bd" transform="translate(260 680) rotate(8)"><use href="#cube" x="0" y="0"/><use href="#cube" x="72" y="0"/><use href="#cube" x="72" y="72"/><use href="#cube" x="144" y="72"/></g>
+<g filter="url(#glow)" opacity=".78" style="color:#ffc45b" transform="translate(1190 670) rotate(-10)"><use href="#cube" x="0" y="0"/><use href="#cube" x="72" y="0"/><use href="#cube" x="144" y="0"/><use href="#cube" x="72" y="72"/></g>
+<g opacity=".7" fill="none" stroke="url(#cyan)" stroke-width="2"><path d="M0 850H1600"/><path d="M0 900H1600" stroke-opacity=".4"/></g>
+<rect width="1600" height="1000" fill="#020611" opacity=".28"/>
+</svg>
