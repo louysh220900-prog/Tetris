@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Tetris — Blocos em Queda</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--panel:#141c32;--line:#293653;--text:#f3f6ff;--muted:#aab5d0;--accent:#7c5cff}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#1a2550 0%,var(--bg) 60%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif;display:flex;justify-content:center;padding:22px 12px}
+main{width:min(100%,680px)}header{text-align:center;margin-bottom:18px}h1{font-size:clamp(2rem,7vw,3.2rem);margin:0;letter-spacing:3px;background:linear-gradient(90deg,#56e0ff,#a88bff,#ff7ac8);color:transparent;background-clip:text}header p{margin:5px 0;color:var(--muted)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 155px;gap:14px;align-items:start}.board-wrap{background:#070b16;border:2px solid #334265;border-radius:14px;padding:8px;box-shadow:0 16px 45px #0006}canvas{display:block;width:100%;height:auto;border-radius:6px;background:#0a1020}
+aside{display:flex;flex-direction:column;gap:12px}.panel{background:linear-gradient(145deg,#19233d,#11182b);border:1px solid var(--line);border-radius:12px;padding:13px}.panel h2{font-size:.78rem;letter-spacing:1.4px;color:var(--muted);margin:0 0 10px}.stat{font-size:1.65rem;font-weight:800;font-variant-numeric:tabular-nums}.small{font-size:.85rem;color:var(--muted)}#next{width:100%;max-width:130px;margin:auto}.btn{border:0;border-radius:10px;padding:11px 12px;font-weight:750;background:var(--accent);color:white;cursor:pointer;box-shadow:0 4px 0 #4936a0}.btn:active,.control:active{transform:translateY(2px);box-shadow:none}.btn.secondary{background:#293653;box-shadow:0 4px 0 #182139}.actions{display:grid;gap:9px}.help{font-size:.78rem;line-height:1.55;color:var(--muted)}.mobile-controls{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:13px;touch-action:manipulation}.control{background:#1b2743;border:1px solid #3b4c70;color:white;border-radius:12px;padding:14px 4px;font-size:1.2rem;font-weight:800;box-shadow:0 4px 0 #0b1121;touch-action:manipulation}.control.wide{grid-column:span 2}.status{text-align:center;min-height:24px;color:#c6d1f3;font-size:.9rem;margin:12px 0 0}
+@media(max-width:520px){body{padding:14px 8px}.layout{grid-template-columns:minmax(0,1fr) 112px;gap:8px}.board-wrap{padding:5px}.panel{padding:9px}.stat{font-size:1.25rem}.panel h2{font-size:.68rem}.help{font-size:.7rem}.btn{padding:10px 5px;font-size:.82rem}.mobile-controls{gap:7px}.control{padding:13px 2px}.layout aside .panel:last-child{display:none}}
+</style>
+</head>
+<body>
+<main>
+<header><h1>TETRIS</h1><p>Encaixe os blocos. Complete linhas. Bata seu recorde!</p></header>
+<div class="layout">
+ <div>
+  <div class="board-wrap"><canvas id="game" width="300" height="600" aria-label="Tabuleiro de Tetris"></canvas></div>
+  <div class="mobile-controls">
+   <button class="control" data-action="left" aria-label="Mover para esquerda">←</button>
+   <button class="control" data-action="rotate" aria-label="Girar peça">↻</button>
+   <button class="control" data-action="right" aria-label="Mover para direita">→</button>
+   <button class="control" data-action="down" aria-label="Descer peça">↓</button>
+   <button class="control wide" data-action="drop">⤓ Queda rápida</button>
+   <button class="control wide" data-action="pause">Ⅱ Pausar</button>
+  </div>
+  <p class="status" id="status">Toque em “Começar” para jogar.</p>
+ </div>
+ <aside>
+  <div class="panel"><h2>PONTUAÇÃO</h2><div class="stat" id="score">0</div></div>
+  <div class="panel"><h2>LINHAS</h2><div class="stat" id="lines">0</div></div>
+  <div class="panel"><h2>NÍVEL</h2><div class="stat" id="level">1</div></div>
+  <div class="panel"><h2>PRÓXIMA PEÇA</h2><canvas id="next" width="120" height="100"></canvas></div>
+  <div class="actions"><button class="btn" id="start">Começar</button><button class="btn secondary" id="restart">Reiniciar</button></div>
+  <div class="panel"><h2>CONTROLES</h2><div class="help">← → mover<br>↑ girar peça<br>↓ descer<br>Espaço: queda rápida<br>P: pausar</div></div>
+ </aside>
+</div>
+</main>
+<script>
+(() => {
+const canvas=document.getElementById('game'),ctx=canvas.getContext('2d'),nextCanvas=document.getElementById('next'),nctx=nextCanvas.getContext('2d');
+const COLS=10,ROWS=20,S=30;
+const shapes=[
+ {c:'#46d9ff',m:[[1,1,1,1]]},
+ {c:'#527dff',m:[[1,0,0],[1,1,1]]},
+ {c:'#ffad42',m:[[0,0,1],[1,1,1]]},
+ {c:'#b477ff',m:[[1,1],[1,1]]},
+ {c:'#50e3a4',m:[[0,1,1],[1,1,0]]},
+ {c:'#ff5f83',m:[[0,1,0],[1,1,1]]},
+ {c:'#ffe16b',m:[[1,1,0],[0,1,1]]}
+];
+let board, piece, next, score, lines, level, running=false, paused=false, over=false, last=0,acc=0,raf=0;
+function cloneShape(s){return {c:s.c,m:s.m.map(r=>r.slice())}}
+function randomPiece(){return cloneShape(shapes[Math.floor(Math.random()*shapes.length)])}
+function reset(){board=Array.from({length:ROWS},()=>Array(COLS).fill(null));score=0;lines=0;level=1;next=randomPiece();piece=spawn();running=false;paused=false;over=false;acc=0;last=0;updateStats();draw();drawNext();document.getElementById('status').textContent='Pronto para jogar!';document.getElementById('start').textContent='Começar';}
+function spawn(){const p=next||randomPiece();next=randomPiece();p.x=Math.floor((COLS-p.m[0].length)/2);p.y=0;drawNext();if(collides(p,0,0,p.m)){over=true;running=false;document.getElementById('status').textContent='Fim de jogo! Toque em Reiniciar.'}return p}
+function collides(p,dx,dy,m=p.m){for(let y=0;y<m.length;y++)for(let x=0;x<m[y].length;x++)if(m[y][x]){let nx=p.x+x+dx,ny=p.y+y+dy;if(nx<0||nx>=COLS||ny>=ROWS||(ny>=0&&board[ny][nx]))return true}return false}
+function merge(){piece.m.forEach((row,y)=>row.forEach((v,x)=>{if(v&&piece.y+y>=0)board[piece.y+y][piece.x+x]=piece.c}));let cleared=0;for(let y=ROWS-1;y>=0;y--)if(board[y].every(Boolean)){board.splice(y,1);board.unshift(Array(COLS).fill(null));cleared++;y++}if(cleared){lines+=cleared;score+=[0,100,300,500,800][cleared]*level;level=Math.floor(lines/10)+1;updateStats()}piece=spawn();if(over)draw()}
+function rotate(m){return m[0].map((_,i)=>m.map(row=>row[i]).reverse())}
+function move(dx,dy){if(!running||paused||over)return;if(!collides(piece,dx,dy)){piece.x+=dx;piece.y+=dy;if(dy)score+=dy===1?1:0;updateStats();draw()}else if(dy===1){merge();draw()}}
+function turn(){if(!running||paused||over)return;const r=rotate(piece.m);if(!collides(piece,0,0,r))piece.m=r;else if(!collides(piece,1,0,r)){piece.x++;piece.m=r}else if(!collides(piece,-1,0,r)){piece.x--;piece.m=r}draw()}
+function drop(){if(!running||paused||over)return;let d=0;while(!collides(piece,0,1)){piece.y++;d++}score+=d*2;merge();updateStats();draw()}
+function updateStats(){document.getElementById('score').textContent=score;document.getElementById('lines').textContent=lines;document.getElementById('level').textContent=level}
+function block(c,x,y,size=S,context=ctx){context.fillStyle=c;context.fillRect(x*size+1,y*size+1,size-2,size-2);context.fillStyle='#ffffff30';context.fillRect(x*size+3,y*size+3,size-6,3);context.fillStyle='#00000018';context.fillRect(x*size+3,y*size+size-5,size-6,2)}
+function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#0a1020';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.strokeStyle='#ffffff0c';ctx.lineWidth=1;for(let x=0;x<=COLS;x++){ctx.beginPath();ctx.moveTo(x*S,0);ctx.lineTo(x*S,ROWS*S);ctx.stroke()}for(let y=0;y<=ROWS;y++){ctx.beginPath();ctx.moveTo(0,y*S);ctx.lineTo(COLS*S,y*S);ctx.stroke()}board.forEach((row,y)=>row.forEach((c,x)=>{if(c)block(c,x,y)}));if(piece)piece.m.forEach((row,y)=>row.forEach((v,x)=>{if(v)block(piece.c,piece.x+x,piece.y+y)}));if(paused||over){ctx.fillStyle='#050814c9';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.textAlign='center';ctx.fillStyle='#fff';ctx.font='bold 27px system-ui';ctx.fillText(over?'FIM DE JOGO':'PAUSADO',canvas.width/2,canvas.height/2);ctx.font='14px system-ui';ctx.fillStyle='#c7d1ef';ctx.fillText(over?'Reinicie para tentar de novo':'Toque em continuar',canvas.width/2,canvas.height/2+28)}}
+function drawNext(){nctx.clearRect(0,0,120,100);nctx.fillStyle='#0a1020';nctx.fillRect(0,0,120,100);if(!next)return;let size=20,ox=(120-next.m[0].length*size)/2,oy=(100-next.m.length*size)/2;next.m.forEach((row,y)=>row.forEach((v,x)=>{if(v){nctx.fillStyle=next.c;nctx.fillRect(ox+x*size+1,oy+y*size+1,size-2,size-2);nctx.fillStyle='#ffffff30';nctx.fillRect(ox+x*size+3,oy+y*size+3,size-6,3)}}))}
+function tick(t){if(!running||paused||over){raf=0;return}if(!last)last=t;acc+=t-last;last=t;const speed=Math.max(90,750-(level-1)*55);if(acc>speed){move(0,1);acc=0}raf=requestAnimationFrame(tick)}
+function start(){if(over){reset()}running=true;paused=false;last=0;document.getElementById('start').textContent='Continuar';document.getElementById('status').textContent='Boa sorte!';if(!raf)raf=requestAnimationFrame(tick);draw()}
+function togglePause(){if(over)return;if(!running){start();return}paused=!paused;last=0;document.getElementById('status').textContent=paused?'Jogo pausado.':'Continue jogando!';if(!paused&&!raf)raf=requestAnimationFrame(tick);draw()}
+document.getElementById('start').addEventListener('click',start);document.getElementById('restart').addEventListener('click',()=>{if(raf){cancelAnimationFrame(raf);raf=0}reset();start()});
+document.querySelectorAll('[data-action]').forEach(b=>{const action=b.dataset.action;const act=()=>{if(action==='left')move(-1,0);if(action==='right')move(1,0);if(action==='down')move(0,1);if(action==='rotate')turn();if(action==='drop')drop();if(action==='pause')togglePause()};b.addEventListener('click',act);});
+document.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','ArrowDown','ArrowUp',' '].includes(e.key))e.preventDefault();if(e.key==='ArrowLeft')move(-1,0);else if(e.key==='ArrowRight')move(1,0);else if(e.key==='ArrowDown')move(0,1);else if(e.key==='ArrowUp'||e.key==='x'||e.key==='X')turn();else if(e.key===' ')drop();else if(e.key.toLowerCase()==='p')togglePause();else if(e.key==='Enter'&&!running)start()});
+let touchStart=null;canvas.addEventListener('touchstart',e=>{touchStart={x:e.changedTouches[0].clientX,y:e.changedTouches[0].clientY};},{passive:true});canvas.addEventListener('touchend',e=>{if(!touchStart)return;let dx=e.changedTouches[0].clientX-touchStart.x,dy=e.changedTouches[0].clientY-touchStart.y;if(Math.abs(dx)>25)move(dx>0?1:-1,0);if(dy>30)move(0,1);if(dy<-30)drop();touchStart=null},{passive:true});reset();
+})();
+</script>
+</body>
+</html>
