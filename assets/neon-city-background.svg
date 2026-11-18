@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="1024" viewBox="0 0 1536 1024">
+<defs>
+ <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#020313"/><stop offset=".55" stop-color="#050b28"/><stop offset="1" stop-color="#071c56"/></linearGradient>
+ <linearGradient id="road" x2="0" y2="1"><stop stop-color="#07133a"/><stop offset="1" stop-color="#020617"/></linearGradient>
+ <linearGradient id="cyan"><stop stop-color="#68f5ff"/><stop offset="1" stop-color="#075cff"/></linearGradient>
+ <linearGradient id="pink"><stop stop-color="#ff54c8"/><stop offset="1" stop-color="#711aff"/></linearGradient>
+ <filter id="glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <g id="cube"><path d="M2 12 35 0 68 18 35 36Z" fill="currentColor" stroke="#bafaff" stroke-width="2"/><path d="M2 12 35 36V70L2 51Z" fill="currentColor" stroke="#bafaff" stroke-width="2" opacity=".8"/><path d="M35 36 68 18V52L35 70Z" fill="currentColor" stroke="#bafaff" stroke-width="2" opacity=".62"/></g>
+ <pattern id="windows" width="18" height="24" patternUnits="userSpaceOnUse"><path d="M4 4h5v10H4z" fill="#148cff" opacity=".6"/></pattern>
+</defs>
+<rect width="1536" height="1024" fill="url(#sky)"/>
+<ellipse cx="770" cy="700" rx="700" ry="300" fill="#073bce" opacity=".18" filter="url(#glow)"/>
+<!-- distant skyline -->
+<g fill="#050d2c" stroke="#1238a0" stroke-width="3">
+<path d="M0 650V410l35-40 20 280H0M70 700V480l35-35 30 255H70M175 720V510l38-70 25 280H175M300 730V470l30-45 28 305H300M420 740V520l35-65 35 285H420M1070 740V490l35-60 35 310H1070M1190 735V430l40-60 30 365H1190M1320 720V500l35-55 35 275H1320M1450 700V390l42-55 44 365h-86"/>
+</g>
+<g fill="url(#windows)" opacity=".8"><path d="M0 410h55v280H0zM70 445h65v255H70zM175 440h63v280h-63zM300 425h58v305h-58zM420 455h70v285h-70zM1070 430h70v310h-70zM1190 370h70v365h-70zM1320 445h70v275h-70zM1450 335h86v365h-86z"/></g>
+<!-- neon architecture edges -->
+<g fill="none" stroke-width="7" filter="url(#glow)"><path d="M18 0V500L0 540M48 0V300L90 340M430 0V190M1080 0V280M1490 0V380" stroke="#153dff"/><path d="M432 0V90M1148 250V500" stroke="#c42dff"/><path d="M0 620 170 720 350 770M1536 620 1360 720 1180 770" stroke="#244cff"/></g>
+<!-- towers and platforms -->
+<g stroke="#1746c7" stroke-width="4" fill="#080d2b"><path d="M120 760V570l24-80 24 80v190zM390 800V590l24-110 25 110v210zM1110 790V520l32-130 32 130v270zM1370 760V560l25-90 25 90v200z"/></g>
+<g fill="none" stroke="#e22dff" stroke-width="5" filter="url(#glow)"><ellipse cx="168" cy="565" rx="95" ry="19"/><ellipse cx="1142" cy="520" rx="95" ry="19"/><path d="M120 760h110M1090 790h110"/></g>
+<!-- perspective floor -->
+<path d="M0 800 430 760H1100l436 40v224H0Z" fill="url(#road)"/>
+<g fill="none" stroke="#087cff" stroke-width="3" opacity=".8"><path d="M0 850H1536M0 910H1536M0 980H1536"/><path d="M768 760 0 1024M768 760 220 1024M768 760 450 1024M768 760 1080 1024M768 760 1320 1024M768 760 1536 1024"/></g>
+<path d="M0 840H1536" stroke="#13dfff" stroke-width="5" filter="url(#glow)"/>
+<!-- floating tetrominoes -->
+<g filter="url(#glow)">
+<g style="color:#00cfff" transform="translate(205 35) rotate(22)"><use href="#cube"/><use href="#cube" x="65"/><use href="#cube" x="130"/><use href="#cube" x="195"/></g>
+<g style="color:#a22cff" transform="translate(115 150) rotate(24)"><use href="#cube"/><use href="#cube" x="65"/><use href="#cube" x="130"/><use href="#cube" x="65" y="65"/></g>
+<g style="color:#ffbd16" transform="translate(280 320) rotate(12)"><use href="#cube"/><use href="#cube" x="65"/><use href="#cube" y="65"/><use href="#cube" x="65" y="65"/></g>
+<g style="color:#ff126f" transform="translate(1240 25) rotate(-18)"><use href="#cube"/><use href="#cube" x="65"/><use href="#cube" y="65"/><use href="#cube" x="65" y="65"/></g>
+<g style="color:#00ed75" transform="translate(1320 170) rotate(-20)"><use href="#cube"/><use href="#cube" x="65"/><use href="#cube" y="65"/><use href="#cube" x="130" y="65"/></g>
+<g style="color:#ff7b12" transform="translate(1285 365) rotate(18)"><use href="#cube"/><use href="#cube" y="65"/><use href="#cube" x="65" y="65"/><use href="#cube" x="65" y="130"/></g>
+</g>
+<!-- block piles at bottom corners -->
+<g filter="url(#glow)">
+<g style="color:#b522ff" transform="translate(-12 665)"><use href="#cube"/><use href="#cube" y="68"/><use href="#cube" x="68" y="68"/></g>
+<g style="color:#00baff" transform="translate(0 800)"><use href="#cube"/><use href="#cube" x="68"/><use href="#cube" y="68"/></g>
+<g style="color:#ff8b16" transform="translate(72 780)"><use href="#cube"/><use href="#cube" x="68" y="68"/></g>
+<g style="color:#16df75" transform="translate(185 850)"><use href="#cube"/><use href="#cube" x="68"/></g>
+<g style="color:#ff245f" transform="translate(1480 665)"><use href="#cube"/><use href="#cube" y="68"/></g>
+<g style="color:#147dff" transform="translate(1390 735)"><use href="#cube"/><use href="#cube" x="68"/><use href="#cube" y="68"/><use href="#cube" x="68" y="68"/></g>
+<g style="color:#ffb21a" transform="translate(1280 850)"><use href="#cube"/><use href="#cube" x="68"/><use href="#cube" y="68"/></g>
+<g style="color:#ed2467" transform="translate(1370 850)"><use href="#cube"/><use href="#cube" x="68"/></g>
+</g>
+<rect width="1536" height="1024" fill="#020515" opacity=".12"/>
+</svg>
